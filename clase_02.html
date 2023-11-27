@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Tareas en local</title>
+    <link href="./bootstrap.min.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="container mt-5">
+      <h1>Lista de Tareas</h1>
+      <form id="task-form">
+        <div class="input-group mb-3">
+          <input
+            type="text"
+            class="form-control"
+            id="task-input"
+            placeholder="Nueva tarea"
+          />
+          <button class="btn btn-primary" type="submit">Añadir</button>
+        </div>
+      </form>
+      <ul class="list-group" id="task-list">
+        
+      </ul>
+    </div>
+
+    <script>
+     
+      function saveTasks(tasks) {
+        
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+      }
+
+      
+      function loadTasks() {
+       
+        const tasks = localStorage.getItem("tasks");
+     
+        return tasks ? JSON.parse(tasks) : [];
+      }
+
+
+      function displayTasks(tasks) {
+        const taskList = document.getElementById("task-list");
+        taskList.innerHTML = "";
+        tasks.forEach((task, index) => {
+          const listItem = document.createElement("li");
+          listItem.className =
+            "list-group-item d-flex justify-content-between align-items-center";
+
+          listItem.textContent = task;
+          const deleteButton = document.createElement("button");
+          deleteButton.className = "btn btn-danger";
+          deleteButton.textContent = "Eliminar";
+          
+          deleteButton.addEventListener("click", () => {
+                       tasks.splice(index, 1);
+            saveTasks(tasks);
+            displayTasks(tasks);
+          });
+          listItem.appendChild(deleteButton);
+          taskList.appendChild(listItem);
+        });
+      }
+
+           const tasks = loadTasks();
+      displayTasks(tasks);
+
+      const form = document.getElementById("task-form");
+      form.addEventListener("submit", (e) => {
+               e.preventDefault();
+        
+        const taskInput = document.getElementById("task-input");
+        const newTask = taskInput.value;
+        tasks.push(newTask);
+        saveTasks(tasks);
+       
+        displayTasks(tasks);
+        
+        taskInput.value = "";
+      });
+    </script>
+
+    <script src="./bootstrap.min.js"></script>
+  </body>
+</html>
+
+
